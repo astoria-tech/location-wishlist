@@ -1,6 +1,6 @@
 {
-  "name": "vue-starter",
-  "short_name": "vue-starter",
+  "name": "location-wishlist",
+  "short_name": "location-wishlist",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

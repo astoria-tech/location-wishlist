@@ -1,29 +1,18 @@
-# vue-starter
+# Location Wishlists
 
-## Project setup
-```
-npm install
-```
+Each vacant storefront in Astoria will have its own page, and locals can submit
+& vote on what they want the location to be.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Overview
 
-### Compiles and minifies for production
-```
-npm run build
-```
+A `vue.js` frontend and a `hug` (Python API framework) backend.
 
-### Run your tests
-```
-npm run test
-```
+## Requirements
 
-### Lints and fixes files
-```
-npm run lint
-```
+Docker & Docker Compose
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Development
+
+- Run `make dev` at the root of this project.
+- Visit the app at [http://localhost:8080](http://localhost:8080).
+- Make your code changes! The app should be live-reloaded whenever you save.

@@ -1,6 +1,10 @@
 <template>
   <div class="hello">
-    <p>Test message.</p>
+    <h1>Vacant Location Wishlists</h1>
+    <p>Have you ever walked by a vacant store and wished it would open as a new bookstore?</p>
+    <p>Or an archery range? Or a beer hall?</p>
+    <p>Well, now is the time to be heard!</p>
+    <h4>Look for our Wishlist QR stickers near vacant storefronts, scan them, and cast your vote!</h4>
   </div>
 </template>
 
@@ -12,14 +16,4 @@ export default {
 </script>
 
 <style scoped>
-h3 { margin: 40px 0 0; }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a { color: #42b983; }
 </style>

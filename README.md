@@ -1,6 +1,6 @@
 # Location Wishlists
 
-Each vacant storefront in Astoria will have its own page, and locals can submit
+Each vacant storefront will have its own page, and locals can submit
 & vote on what they want the location to be.
 
 ## Overview

@@ -1,19 +1,32 @@
 <template>
-  <div class="wishlist">
-    <h1>Wishlist for {{ $route.params.address }}</h1>
-    <p>Submit &amp; vote on what you want this location to be!</p>
-    <div>
-      <input type="text" name="wish" id="wish" value="" />
-      <input type="submit" value="Submit" />
+  <div class="body wishlist">
+    <h1>{{ $route.params.address }}</h1>
+
+    <div class="mt-3 mb-5">
+
+      <p>Looks like this storefront is empty!</p>
+      <p>Submit &amp; vote on what you want this location to be!</p>
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="input-group col-lg-6 col-md-8">
+            <input type="text" class="form-control" placeholder="Bakery? Pizzeria? Bookstore?" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary" type="button" id="button-addon2">Make your wish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="wish-container">
-      <div v-for="wish in wishes" class="card wish mr-3 mb-3">
+      <div v-for="wish in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
         <div class="card-body">
           <h5 class="card-title">{{ wish }}</h5>
           <p class="card-text">9 votes</p>
-          <a href="#" class="btn btn-primary">-1</a>
-          <a href="#" class="btn btn-primary">+1</a>
+          <a href="#" class="btn btn-outline-primary">-1</a>
+          <a href="#" class="btn btn-outline-primary">+1</a>
         </div>
       </div>
     </div>
@@ -38,10 +51,7 @@ export default {
 <style scoped>
 h3 { margin: 40px 0 0; }
 
-a { color: #42b983; }
-
 .card-body a {
-  color: white;
   margin: 0 10px;
   width: 3rem;
 }
@@ -54,8 +64,6 @@ a { color: #42b983; }
   justify-content: center;
 }
 
-.wish {
-  margin-top: 5px;
-}
+.wish { margin-top: 5px; }
 
 </style>

@@ -12,7 +12,7 @@
           <div class="input-group col-lg-6 col-md-8">
             <input type="text" class="form-control" placeholder="Bakery? Pizzeria? Bookstore?" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-              <button class="btn btn-outline-primary" type="button" id="button-addon2">Make your wish</button>
+              <button class="btn btn-outline-success" type="button" id="button-addon2">Make your wish</button>
             </div>
           </div>
         </div>
@@ -25,8 +25,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ wish }}</h5>
           <p class="card-text">9 votes</p>
-          <a href="#" class="btn btn-outline-primary">-1</a>
-          <a href="#" class="btn btn-outline-primary">+1</a>
+          <a href="#" class="btn btn-outline-success">-1</a>
+          <a href="#" class="btn btn-outline-success">+1</a>
         </div>
       </div>
     </div>

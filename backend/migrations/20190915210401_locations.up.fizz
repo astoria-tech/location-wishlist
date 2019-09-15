@@ -1,0 +1,4 @@
+create_table("locations") {
+  t.Column("id", "uuid", {"primary": true})
+  t.Column("address", "string", {})
+}

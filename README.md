@@ -5,7 +5,10 @@ Each vacant storefront will have its own page, and locals can submit
 
 ## Overview
 
-A `vue.js` frontend and a `hug` (Python API framework) backend.
+A `vue.js` frontend and a `buffalo` (Golang API framework) backend.
+
+- `soda create -a` to create database
+- `soda migrate` to migrate database
 
 ## Requirements
 

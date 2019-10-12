@@ -12,13 +12,14 @@ const sequelize = new Sequelize(
 
 const models = {
   Location: sequelize.import('./location'),
+  Suggestion: sequelize.import('./suggestion')
 };
 
-// Object.keys(models).forEach(key => {
-//   if ('associate' in models[key]) {
-//     models[key].associate(models);
-//   }
-// });
+Object.keys(models).forEach(key => {
+  if ('associate' in models[key]) {
+    models[key].associate(models);
+  }
+});
 
 // exports.sequelize = sequelize;
 // exports.models = models;

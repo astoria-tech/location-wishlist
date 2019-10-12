@@ -38,6 +38,13 @@ services:
       - 'postgres:/var/lib/postgresql/data'
     ports:
       - '5432'
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5433:80
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+      - PGADMIN_DEFAULT_PASSWORD=password
 
 volumes:
   postgres:

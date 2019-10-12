@@ -60,6 +60,7 @@ func App() *buffalo.App {
 
 		location := LocationsResource{}
     app.GET("/locations", location.List)
+    app.POST("/locations", location.Create)
 
 		app.GET("/", HomeHandler)
 	}

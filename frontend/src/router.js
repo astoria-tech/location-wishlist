@@ -9,7 +9,8 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     { path: '/', name: 'home', component: Home },
-    { path: '/list', name: 'list', component: () => import('./views/List.vue') },
+    { path: '/locations', name: 'locations', component: () => import('./views/Locations.vue') },
+    { path: '/locations/new', name: 'new_location', component: () => import('./views/LocationsNew.vue') },
     { path: '/wishlist/:address(.*)', name: 'wishlist', component: () => import('./views/Wishlist.vue') }
   ]
 })

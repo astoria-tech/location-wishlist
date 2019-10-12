@@ -7,6 +7,8 @@ import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
+window.axios = require('axios');
+
 new Vue({
   router,
   render: h => h(App),

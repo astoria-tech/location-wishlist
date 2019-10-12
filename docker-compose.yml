@@ -7,7 +7,7 @@ services:
       shipyard.route: '/'
     build: 'frontend'
     volumes:
-      - './frontend:/srv'
+      - './frontend/src:/srv/src'
     ports:
       - '8080:8080'
 

@@ -10,17 +10,41 @@ services:
       - './frontend:/srv'
     ports:
       - '8080:8080'
+  
+  backend:
+    build: 'backend'
+    ports:
+      - 3000:3000
+    command: yarn start
+    volumes:
+      - ./backend/:/app/
+    environment:
+      - PORT=3000
+      - DATABASE=wishlist
+      - DATABASE_USER=wishlist
+      - DATABASE_PASSWORD=wishlist
+      - DATABASE_HOST=postgres
+    depends_on:
+      - postgres
 
   postgres:
     image: 'postgres:9.6-alpine'
     environment:
       POSTGRES_DB: 'wishlist'
       POSTGRES_USER: 'wishlist'
+      POSTGRES_PASSWORD: 'wishlist'
       PGDATA: '/var/lib/postgresql/data/pgdata'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
     ports:
       - '5432'
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5433:80
+    environment: 
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+      - PGADMIN_DEFAULT_PASSWORD=password
 
 volumes:
   postgres:

@@ -10,7 +10,8 @@
     "sequelize": "^5.19.6"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "prettier": "^1.18.2"
   },
   "scripts": {
     "start": "nodemon --inspect=0.0.0.0:9229 src/index.js"

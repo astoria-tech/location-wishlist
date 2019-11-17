@@ -119,6 +119,9 @@ const resolvers = {
             },
             { transaction: t }
           ).then(async suggestion => {
+            if (!suggestion) {
+              throw "Not found";
+            }
             suggestion.votes++;
             await suggestion.save();
             return suggestion.votes;
@@ -127,32 +130,35 @@ const resolvers = {
         .catch(console.error);
     },
     downVote: async (parent, args, { models }) => {
-        const { address, idea } = args;
+      const { address, idea } = args;
 
-        return await sequelize
-          .transaction(t => {
-            return models.Suggestion.findOne(
-              {
-                where: {
-                  idea
-                },
-                include: [
-                  {
-                    model: models.Location,
-                    where: {
-                      address
-                    }
-                  }
-                ]
+      return await sequelize
+        .transaction(t => {
+          return models.Suggestion.findOne(
+            {
+              where: {
+                idea
               },
-              { transaction: t }
-            ).then(async suggestion => {
-              suggestion.votes--;
-              await suggestion.save();
-              return suggestion.votes;
-            });
-          })
-          .catch(console.error);
+              include: [
+                {
+                  model: models.Location,
+                  where: {
+                    address
+                  }
+                }
+              ]
+            },
+            { transaction: t }
+          ).then(async suggestion => {
+            if (!suggestion) {
+              throw "Not found";
+            }
+            suggestion.votes--;
+            await suggestion.save();
+            return suggestion.votes;
+          });
+        })
+        .catch(console.error);
     }
   }
 };

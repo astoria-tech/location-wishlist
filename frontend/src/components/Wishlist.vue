@@ -2,12 +2,17 @@
   <div class="body wishlist">
     <h1>{{ $route.params.address }}</h1>
 
-    <!-- <div class="mapouter"><div class="gmap_canvas"><iframe width="450" height="300" id="gmap_canvas" src="https://maps.google.com/maps?q=29-34%2038th%20Street%2C%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div> -->
+    <div class="mapouter d-flex justify-content-center">
+      
+        <div class="gmap_canvas mr-4" style="display: inline-block;">
+          <iframe width="450" height="300" id="gmap_canvas" v-bind:src="'https://maps.google.com/maps?q=' + $route.params.address + '%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+        </div>
 
-    <div class="mapouter">
-      <div class="gmap_canvas">
-        <iframe width="450" height="300" id="gmap_canvas" v-bind:src="'https://maps.google.com/maps?q=' + $route.params.address + '%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-      </div>
+        <div style="display: inline-block;">
+
+          
+          <img src="http://placehold.jp/3d4070/ffffff/450x300.png?css=%7B%22border-radius%22%3A%2215px%22%7D">
+        </div>
     </div>
 
     <div class="mt-3 mb-5">

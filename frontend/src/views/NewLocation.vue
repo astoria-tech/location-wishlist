@@ -22,6 +22,7 @@
 
       <div class="col-6">
         <label for="image-file">Please upload a picture of the storefront</label>
+        <br>
         <input type="file" class="form-control-sm" id="exampleFormControlFile1">
 
       </div>

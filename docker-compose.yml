@@ -7,7 +7,7 @@ services:
       shipyard.route: '/'
     build: 'frontend'
     volumes:
-      - './frontend:/srv'
+      - './frontend/src:/srv/src'
     ports:
       - '8080:8080'
   
@@ -17,7 +17,7 @@ services:
       - 3000:3000
     command: yarn start
     volumes:
-      - ./backend/:/app/
+      - ./backend/src/:/app/src/
     environment:
       - PORT=3000
       - DATABASE=wishlist

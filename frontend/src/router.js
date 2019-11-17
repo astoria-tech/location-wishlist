@@ -12,5 +12,6 @@ export default new Router({
     { path: '/list', name: 'list', component: () => import('./views/List.vue') },
     { path: '/wishlist/:locationId(.*)', name: 'wishlist', component: () => import('./views/Wishlist.vue') },
     { path: '/obscurepath', name: 'submissionadmin', component: () => import('./components/SubmissionAdmin') }
+    { path: '/new-location', name: 'new-location', component: () => import('./views/NewLocation.vue') }
   ]
 })

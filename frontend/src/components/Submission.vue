@@ -2,12 +2,9 @@
   <div class="submission-container">
     <h4>New Submission</h4>
     <img class="submission-img" :src="location.img_url">
-    <div class="address-container">
-      <div>Address:</div>
-      <div class="address">
-        <div>{{location.address_line_1}}</div>
-        <div>{{location.address_line_2}}</div>
-      </div>
+    <div class="address">
+      <div>{{location.address_line_1}}</div>
+      <div>{{location.address_line_2}}</div>
     </div>
     <div class="timestamp">
       <span>Submitted on:</span>
@@ -49,21 +46,10 @@ h4 {
   object-fit: cover;
 }
 
-.address-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 5px;
-}
-
-.address-container > div:first-of-type {
-  margin-right: 10px;
-  font-weight: 600;
-}
-
 .address {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .timestamp {

@@ -1,6 +1,6 @@
 <template>
   <div class="submission-container">
-    <h3>Submission #{{location.submission_id}}</h3>
+    <h4>New Submission</h4>
     <img class="submission-img" :src="location.img_url">
     <div class="address-container">
       <div>Address:</div>
@@ -11,7 +11,7 @@
     </div>
     <div class="timestamp">
       <span>Submitted on:</span>
-      11/17/2019 3:07 PM
+      {{formatDate(location.timestamp)}}
     </div>
     <div class="button-container">
       <button>Accept</button>
@@ -21,17 +21,19 @@
 </template>
 
 <script>
+import { formatDate } from '../mixins/formatDate.js'
 export default {
   name: "Submission",
   props: {
     location: Object
-  }
+  }, 
+  mixins: [formatDate]
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
+h4 {
   margin: 3px 0;
 }
 .submission-container {

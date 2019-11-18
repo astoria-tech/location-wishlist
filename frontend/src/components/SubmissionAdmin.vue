@@ -1,5 +1,5 @@
 <template>
-  <div id="admin-submission-page">
+  <div id="submission-admin-page">
     <h1>Location Submission Admin Page</h1>
     <div class="submissions-container">
       <Submission :key="location.submission_id" v-for="location in locations" :location="location"/>
@@ -11,7 +11,7 @@
 import Submission from "./Submission";
 
 export default {
-  name: "AdminSubmissionPage",
+  name: "SubmissionAdmiPage",
   components: {
     Submission
   },

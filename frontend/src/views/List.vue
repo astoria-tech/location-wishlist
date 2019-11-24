@@ -22,7 +22,7 @@ export default {
 
   created() {
   axios({
-    url: 'http://localhost:3000/graphql',
+    url: '/graphql',
     method: 'post',
     data: {
       query: `

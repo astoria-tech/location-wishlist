@@ -15,8 +15,6 @@ services:
     labels:
       shipyard.route: '/graphql'
     build: 'backend'
-    ports:
-      - 3000:3000
     command: yarn start
     volumes:
       - ./backend/src/:/app/src/

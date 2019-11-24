@@ -24,6 +24,8 @@ services:
       - DATABASE_USER=wishlist
       - DATABASE_PASSWORD=wishlist
       - DATABASE_HOST=postgres
+    ports:
+      - '3000'
     depends_on:
       - postgres
 

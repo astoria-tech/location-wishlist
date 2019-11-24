@@ -12,6 +12,8 @@ services:
       - '8080:8080'
   
   backend:
+    labels:
+      shipyard.route: '/graphql'
     build: 'backend'
     ports:
       - 3000:3000

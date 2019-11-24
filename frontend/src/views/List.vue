@@ -2,12 +2,44 @@
   <div class="body">
     <h1>All Vacant Locations</h1>
     <ul class="mt-4">
-      <li><a href="/wishlist/29-34 38th Street">29-34 38th Street</a></li>
-      <li><a href="/wishlist/32-13 Broadway">32-13 Broadway</a></li>
-      <li><a href="/wishlist/40-20 Steinway Street">40-20 Steinway Street</a></li>
+      <li v-for="location in locations" v-bind:key="location.address">
+        <a :href="'/wishlist/' + location.address">{{ location.address }}</a>
+      </li>
     </ul>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      locations: [],
+      errors: []
+    }
+  },
+
+  created() {
+  axios({
+    url: 'http://localhost:3000/graphql',
+    method: 'post',
+    data: {
+      query: `
+          {
+            locations {
+              address
+            }
+          }
+        `
+    }
+  }).then((result) => {
+    this.locations = result.data.data.locations
+  });
+
+  }
+}
+</script>
 
 <style scoped>
 ul {

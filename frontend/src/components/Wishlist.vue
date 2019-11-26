@@ -36,8 +36,8 @@
     <div class="wish-container">
       <div v-for="wish in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ wish }}</h5>
-          <p class="card-text">9 votes</p>
+          <h5 class="card-title">{{ wish.idea }}</h5>
+          <p class="card-text">{{ wish.votes }}</p>
           <a href="#" class="btn btn-outline-success">-1</a>
           <a href="#" class="btn btn-outline-success">+1</a>
         </div>
@@ -48,17 +48,40 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Wishlist',
   data: () => ({
-    wishes: [
-      'Barbecue', 'Beer hall', 'Archery range',
-      'Barbecue', 'Beer hall', 'Archery range',
-      'Barbecue', 'Beer hall', 'Archery range',
-    ]
+    wishes: []
   }),
-  props: { address: String }
+  props: { address: String },
+  async created() {
+      try {
+          const address = this.$route.params.address;
+          const result = await axios({
+            url: '/graphql',
+            method: 'post',
+            data: {
+              query: `
+                  {
+                    location(address:"${address}") {
+                      suggestions {
+                        idea
+                        votes
+                      }
+                    }
+                  }
+                `
+            }
+          });
+          this.wishes = result.data.data.location.suggestions;
+      } catch (error) {
+          this.errors.push(error);
+      }
+  }
 }
+
 </script>
 
 <style scoped>

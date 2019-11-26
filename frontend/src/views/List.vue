@@ -19,7 +19,7 @@ export default {
       errors: []
     }
   },
-  async mounted() {
+  async created() {
       try {
           const result = await axios({
             url: '/graphql',

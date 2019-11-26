@@ -22,28 +22,26 @@
 
       <div class="container">
         <div class="row justify-content-center">
-          <div class="input-group col-lg-6 col-md-8">
+          <form @submit.prevent="handleSubmit" class="input-group col-lg-6 col-md-8">
             <input type="text" class="form-control" placeholder="Bakery? Pizzeria? Bookstore?" aria-label="Recipient's username" aria-describedby="button-addon2">
             <div class="input-group-append">
-              <button class="btn btn-outline-success" type="button" id="button-addon2">Make your wish</button>
+              <button type="submit" class="btn btn-outline-success" id="button-addon2">Submit</button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
-
     </div>
 
     <div class="wish-container">
-      <div v-for="(wish, index) in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
+      <div v-for="wish in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
         <div class="card-body">
           <h5 class="card-title">{{ wish.idea }}</h5>
           <p class="card-text">{{ wish.votes }}</p>
-          <a v-on:click="downVote($route.params.address, wish.idea, index)" href="#" class="btn btn-outline-success">-1</a>
-          <a v-on:click="upVote($route.params.address, wish.idea, index)" href="#" class="btn btn-outline-success">+1</a>
+          <a v-on:click="downVote($route.params.address, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
+          <a v-on:click="upVote($route.params.address, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -56,7 +54,30 @@ export default {
     wishes: []
   }),
   methods : {
-    upVote: async function (address, idea, index) {
+    handleSubmit: function(e) {
+      let idea = document.querySelector('.form-control');
+      if (idea.value) {
+        this.addIdea(this.$route.params.address, idea.value);
+        idea.value = "";
+      }
+    },
+    addIdea: async function (address, idea) {
+     const result = await axios({
+            url: '/graphql',
+            method: 'post',
+            data: {
+              query: `
+                mutation {
+                  addIdea(
+                    address: "${address}",
+                    idea: "${idea}")
+                }
+              `
+            }
+          });
+          this.fetchWishes()
+    },
+    upVote: async function (address, idea) {
      const result = await axios({
             url: '/graphql',
             method: 'post',
@@ -72,7 +93,7 @@ export default {
           });
           this.fetchWishes()
     },
-    downVote: async function (address, idea, index) {
+    downVote: async function (address, idea) {
      const result = await axios({
             url: '/graphql',
             method: 'post',

@@ -19,24 +19,25 @@ export default {
       errors: []
     }
   },
-
-  created() {
-  axios({
-    url: '/graphql',
-    method: 'post',
-    data: {
-      query: `
-          {
-            locations {
-              address
+  async mounted() {
+      try {
+          const result = await axios({
+            url: '/graphql',
+            method: 'post',
+            data: {
+              query: `
+                  {
+                    locations {
+                      address
+                    }
+                  }
+                `
             }
-          }
-        `
-    }
-  }).then((result) => {
-    this.locations = result.data.data.locations
-  });
-
+          });
+          this.locations = result.data.data.locations;
+      } catch (error) {
+          this.errors.push(error);
+      }
   }
 }
 </script>

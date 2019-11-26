@@ -34,12 +34,12 @@
     </div>
 
     <div class="wish-container">
-      <div v-for="wish in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
+      <div v-for="(wish, index) in wishes" v-bind:key="wish.id" class="card wish mr-3 mb-3">
         <div class="card-body">
           <h5 class="card-title">{{ wish.idea }}</h5>
           <p class="card-text">{{ wish.votes }}</p>
-          <a href="#" class="btn btn-outline-success">-1</a>
-          <a href="#" class="btn btn-outline-success">+1</a>
+          <a v-on:click="downVote($route.params.address, wish.idea, index)" href="#" class="btn btn-outline-success">-1</a>
+          <a v-on:click="upVote($route.params.address, wish.idea, index)" href="#" class="btn btn-outline-success">+1</a>
         </div>
       </div>
     </div>
@@ -55,30 +55,68 @@ export default {
   data: () => ({
     wishes: []
   }),
-  props: { address: String },
-  async created() {
-      try {
-          const address = this.$route.params.address;
-          const result = await axios({
+  methods : {
+    upVote: async function (address, idea, index) {
+     const result = await axios({
             url: '/graphql',
             method: 'post',
             data: {
               query: `
-                  {
-                    location(address:"${address}") {
-                      suggestions {
-                        idea
-                        votes
-                      }
-                    }
-                  }
-                `
+                mutation {
+                  upVote(
+                    address: "${address}",
+                    idea: "${idea}")
+                }
+              `
             }
           });
-          this.wishes = result.data.data.location.suggestions;
+          this.fetchWishes()
+    },
+    downVote: async function (address, idea, index) {
+     const result = await axios({
+            url: '/graphql',
+            method: 'post',
+            data: {
+              query: `
+                mutation {
+                  downVote(
+                    address: "${address}",
+                    idea: "${idea}")
+                }
+              `
+            }
+          });
+          this.fetchWishes()
+    },
+    fetchWishes: async function() {
+      try {
+        const address = this.$route.params.address;
+        const result = await axios({
+          url: '/graphql',
+          method: 'post',
+          data: {
+            query: `
+                {
+                  location(address:"${address}") {
+                    suggestions {
+                      idea
+                      votes
+                    }
+                  }
+                }
+              `
+          }
+        });
+        let sortedWishes = result.data.data.location.suggestions.sort((a,b) => b.votes - a.votes);
+        this.wishes = sortedWishes;
       } catch (error) {
           this.errors.push(error);
       }
+}
+  },
+  props: { address: String },
+  created() {
+     this.fetchWishes()
   }
 }
 

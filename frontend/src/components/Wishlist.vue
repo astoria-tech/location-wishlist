@@ -54,7 +54,7 @@ export default {
     wishes: []
   }),
   methods : {
-    handleSubmit: function(e) {
+    handleSubmit: function() {
       let idea = document.querySelector('.form-control');
       if (idea.value) {
         this.addIdea(this.$route.params.address, idea.value);
@@ -62,52 +62,52 @@ export default {
       }
     },
     addIdea: async function (address, idea) {
-     const result = await axios({
-            url: '/graphql',
-            method: 'post',
-            data: {
-              query: `
-                mutation {
-                  addIdea(
-                    address: "${address}",
-                    idea: "${idea}")
-                }
-              `
+      await axios({
+        url: '/graphql',
+        method: 'post',
+        data: {
+          query: `
+            mutation {
+              addIdea(
+                address: "${address}",
+                idea: "${idea}")
             }
-          });
-          this.fetchWishes()
+          `
+        }
+      });
+      this.fetchWishes()
     },
     upVote: async function (address, idea) {
-     const result = await axios({
-            url: '/graphql',
-            method: 'post',
-            data: {
-              query: `
-                mutation {
-                  upVote(
-                    address: "${address}",
-                    idea: "${idea}")
-                }
-              `
+      await axios({
+        url: '/graphql',
+        method: 'post',
+        data: {
+          query: `
+            mutation {
+              upVote(
+                address: "${address}",
+                idea: "${idea}")
             }
-          });
-          this.fetchWishes()
+          `
+        }
+      });
+      this.fetchWishes()
     },
     downVote: async function (address, idea) {
-     const result = await axios({
-            url: '/graphql',
-            method: 'post',
-            data: {
-              query: `
-                mutation {
-                  downVote(
-                    address: "${address}",
-                    idea: "${idea}")
-                }
-              `
+      await axios({
+        url: '/graphql',
+        method: 'post',
+        data: {
+          query: `
+            mutation {
+              downVote(
+                address: "${address}",
+                idea: "${idea}")
             }
-          });
-          this.fetchWishes()
+          `
+        }
+      });
+      this.fetchWishes()
     },
     fetchWishes: async function() {
       try {

@@ -17,6 +17,7 @@ const typeDefs = gql`
 
   type Location {
     address: String
+    createdAt: String
     isAccepted: Boolean
     suggestions: [Suggestion]
   }

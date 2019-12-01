@@ -15,6 +15,7 @@ const typeDefs = gql`
 
   type Location {
     address: String
+    isAccepted: Boolean
     suggestions: [Suggestion]
   }
 
@@ -167,11 +168,42 @@ const server = new ApolloServer({
 
 const app = express();
 server.applyMiddleware({ app });
-
-sequelize.sync().then(async () => {
+const eraseDatabaseOnSync = true;
+sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
+  if (eraseDatabaseOnSync) {
+    createLocations();
+  }
   app.listen({ port: PORT }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
     )
   );
 });
+
+const createLocations = async () => {
+  await models.Location.create(
+    {
+      address: "40-12 Broadway"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "29-10 Broadway"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "29-34 38th Street"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "40-20 Steinway Street"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "32-13 Broadway"
+    }
+  )
+}

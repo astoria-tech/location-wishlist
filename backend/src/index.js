@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 3000;
 const typeDefs = gql`
   type Query {
     locations: [Location]
+    acceptedLocations: [Location]
+    submittedLocations: [Location]
     location(address: String!): Location
   }
 
@@ -37,6 +39,22 @@ const resolvers = {
   Query: {
     locations: async (parent, args, { models }) => {
       return await models.Location.findAll({
+        include: [models.Suggestion]
+      });
+    },
+    acceptedLocations: async (parent, args, { models }) => {
+      return await models.Location.findAll({
+        where: {
+          isAccepted: true
+        },
+        include: [models.Suggestion]
+      });
+    },
+    submittedLocations: async (parent, args, { models }) => {
+      return await models.Location.findAll({
+        where: {
+          isAccepted: false
+        },
         include: [models.Suggestion]
       });
     },
@@ -183,12 +201,14 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
 const createLocations = async () => {
   await models.Location.create(
     {
-      address: "40-12 Broadway"
+      address: "40-12 Broadway",
+      isAccepted: true
     }
   )
   await models.Location.create(
     {
-      address: "29-10 Broadway"
+      address: "29-10 Broadway",
+      isAccepted: true
     }
   )
   await models.Location.create(

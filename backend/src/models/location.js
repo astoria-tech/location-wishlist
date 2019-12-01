@@ -4,6 +4,10 @@ const location = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false
+      },
+      isAccepted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       }
     });
 

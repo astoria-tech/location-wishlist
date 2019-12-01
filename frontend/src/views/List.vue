@@ -27,14 +27,14 @@ export default {
             data: {
               query: `
                   {
-                    locations {
+                    acceptedLocations {
                       address
                     }
                   }
                 `
             }
           });
-          this.locations = result.data.data.locations;
+          this.locations = result.data.data.acceptedLocations;
       } catch (error) {
           this.errors.push(error);
       }

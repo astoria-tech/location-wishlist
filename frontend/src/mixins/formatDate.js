@@ -1,7 +1,7 @@
 export const formatDate = {
   methods: {
     formatDate(date) {
-      return new Date(date).toLocaleString();
+      return new Date(parseInt(date)).toLocaleString();
     }
   }
 }

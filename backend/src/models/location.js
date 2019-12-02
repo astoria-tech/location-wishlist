@@ -5,7 +5,7 @@ const location = (sequelize, DataTypes) => {
         unique: true,
         allowNull: false
       },
-      isAccepted: {
+      isApproved: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       }

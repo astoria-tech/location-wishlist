@@ -38,7 +38,6 @@ export default {
       }
     },
     addLocation: async function (address) {
-      console.log('addloc', address)
       await axios({
         url: '/graphql',
         method: 'post',

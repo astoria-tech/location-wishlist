@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const typeDefs = gql`
   type Query {
     locations: [Location]
-    acceptedLocations: [Location]
+    approvedLocations: [Location]
     submittedLocations: [Location]
     location(address: String!): Location
   }
@@ -18,7 +18,7 @@ const typeDefs = gql`
   type Location {
     address: String
     createdAt: String
-    isAccepted: Boolean
+    isApproved: Boolean
     suggestions: [Suggestion]
   }
 
@@ -29,6 +29,8 @@ const typeDefs = gql`
 
   type Mutation {
     addLocation(address: String!): Boolean
+    approveLocation(address: String!): Boolean
+    rejectLocation(address: String!): Boolean
     addIdea(address: String!, idea: String!): Boolean
     upVote(address: String!, idea: String!): Int
     downVote(address: String!, idea: String!): Int
@@ -43,10 +45,10 @@ const resolvers = {
         include: [models.Suggestion]
       });
     },
-    acceptedLocations: async (parent, args, { models }) => {
+    approvedLocations: async (parent, args, { models }) => {
       return await models.Location.findAll({
         where: {
-          isAccepted: true
+          isApproved: true
         },
         include: [models.Suggestion]
       });
@@ -54,7 +56,7 @@ const resolvers = {
     submittedLocations: async (parent, args, { models }) => {
       return await models.Location.findAll({
         where: {
-          isAccepted: false
+          isApproved: false
         },
         include: [models.Suggestion]
       });
@@ -173,7 +175,44 @@ const resolvers = {
             });
           })
           .catch(console.error);
-    }
+    },
+    approveLocation: async (parent, args, { models }) => {
+      const { address, idea } = args;
+      return await sequelize
+        .transaction(t => {
+          return models.Location.findOne(
+            {
+              where: {
+                address
+              }
+            },
+            { transaction: t }
+          ).then(async location => {
+            location.isApproved = !location.isApproved;
+            await location.save();
+            return location.isApproved
+          });
+        })
+        .catch(console.error);
+    },
+    rejectLocation: async (parent, args, { models }) => {
+      const { address, idea } = args;
+      return await sequelize
+        .transaction(t => {
+          return models.Location.findOne(
+            {
+              where: {
+                address
+              }
+            },
+            { transaction: t }
+          ).then(async location => {
+            await location.destroy();
+            return location.isApproved
+          });
+        })
+        .catch(console.error);
+    },
   }
 };
 
@@ -203,13 +242,13 @@ const createLocations = async () => {
   await models.Location.create(
     {
       address: "40-12 Broadway",
-      isAccepted: true
+      isApproved: true
     }
   )
   await models.Location.create(
     {
       address: "29-10 Broadway",
-      isAccepted: true
+      isApproved: true
     }
   )
   await models.Location.create(

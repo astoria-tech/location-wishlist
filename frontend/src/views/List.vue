@@ -6,6 +6,7 @@
         <a :href="'/wishlist/' + location.address">{{ location.address }}</a>
       </li>
     </ul>
+    <p v-if="!locations.length">This list is currently empty. Check back soon for new locations :)</p>
   </div>
 </template>
 

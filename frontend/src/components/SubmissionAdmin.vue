@@ -2,7 +2,13 @@
   <div id="submission-admin-page">
     <h1>Location Submission Admin Page</h1>
     <div class="submissions-container">
-      <Submission :key="location.submission_id" v-for="location in locations" :location="location"/>
+      <Submission
+      :key="location.submission_id"
+      v-for="location in locations"
+      :location="location"
+      :id="location.submission_id"
+      @update-locations="updateLocations"/>
+      <h3 v-if="locations.length === 0">There are no pending submissions</h3>
     </div>
   </div>
 </template>
@@ -40,6 +46,13 @@ export default {
         this.locations = result.data.data.submittedLocations;
     } catch (error) {
         this.errors.push(error);
+    }
+  },
+  methods: {
+    updateLocations: function(address) {
+      this.locations = this.locations.filter(location => {
+        return location.address !== address;
+      })
     }
   }
 };

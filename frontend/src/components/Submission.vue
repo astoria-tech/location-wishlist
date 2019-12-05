@@ -42,7 +42,7 @@ export default {
           `
         }
       });
-      this.$emit("update-posts", address)
+      this.$emit("update-locations", address)
     },
     rejectLocation: async function (address) {
       await axios({
@@ -58,7 +58,7 @@ export default {
           `
         }
       });
-      this.$emit("update-posts", address)
+      this.$emit("update-locations", address)
     }
   }
 };

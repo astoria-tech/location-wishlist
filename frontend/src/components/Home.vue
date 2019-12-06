@@ -11,7 +11,7 @@
       <div class="container mt-3">
         <div class="row justify-content-center">
           <form @submit.prevent="handleSubmit" class="input-group col-lg-6 col-md-8">
-            <input type="text" class="form-control" placeholder="Enter vacant location address" aria-label="Vacant location address input" aria-describedby="button-addon2">
+            <input type="text" class="form-control" placeholder="Enter address, ex: 40-05 Broadway" aria-label="Vacant location address input" aria-describedby="button-addon2">
             <div class="input-group-append">
               <button type="submit" class="btn btn-outline-success" id="button-addon2">Submit</button>
             </div>

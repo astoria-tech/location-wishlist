@@ -1,16 +1,13 @@
 <template>
   <div class="submission-container">
-    <h4>New Submission</h4>
+    <h4 class="m-3">{{location.address}}</h4>
     <img class="submission-img" src="https://i.imgur.com/LF1Ndmb.jpg">
-    <div class="address">
-      <div>{{location.address}}</div>
-    </div>
-    <div class="timestamp">
+    <div class="timestamp mt-3">
       <span>Submitted on:</span>
       {{formatDate(location.createdAt)}}
     </div>
-    <div class="button-container">
-      <a v-on:click="approveLocation(location.address)" href="#" class="btn btn-outline-success">Approve</a>
+    <div class="button-container m-3 mb-3">
+      <a v-on:click="approveLocation(location.address)" href="#" class="btn btn-outline-success mr-3">Approve</a>
       <a v-on:click="rejectLocation(location.address)" href="#" class="btn btn-outline-success">Reject</a>
     </div>
   </div>

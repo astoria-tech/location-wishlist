@@ -52,7 +52,7 @@ export default {
         }
       });
       let messageBox = document.querySelector('.message-box');
-      messageBox.innerText = "Thank you for your entry. Check back soon :)"
+      messageBox.innerText = "Thank you for your entry! A page will be generated soon, check back in a bit. :)"
     },
   },
   props: { msg: String }

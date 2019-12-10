@@ -226,11 +226,12 @@ const server = new ApolloServer({
 
 const app = express();
 server.applyMiddleware({ app });
-const eraseDatabaseOnSync = true;
-sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
-  if (eraseDatabaseOnSync) {
+const seedData = false;
+sequelize.sync({ force: seedData }).then(async () => {
+  if (seedData) {
     createLocations();
   }
+
   app.listen({ port: PORT }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`

@@ -1,6 +1,7 @@
 <template>
   <div id="submission-admin-page">
-    <h1>Location Submission Admin Page</h1>
+    <h2>Locations Pending Verification</h2>
+    <p class="mb-4">Make sure each location has a valid address and clear picture!</p>
     <div class="submissions-container">
       <Submission
       :key="location.submission_id"

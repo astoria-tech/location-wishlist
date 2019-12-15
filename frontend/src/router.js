@@ -10,7 +10,7 @@ export default new Router({
   routes: [
     { path: '/', name: 'home', component: Home },
     { path: '/list', name: 'list', component: () => import('./views/List.vue') },
-    { path: '/wishlist/:address(.*)', name: 'wishlist', component: () => import('./views/Wishlist.vue') },
+    { path: '/wishlist/:id(.*)', name: 'wishlist', component: () => import('./views/Wishlist.vue') },
     { path: '/obscurepath', name: 'submissionadmin', component: () => import('./components/SubmissionAdmin') }
   ]
 })

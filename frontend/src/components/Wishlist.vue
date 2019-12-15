@@ -1,11 +1,11 @@
 <template>
   <div class="body wishlist">
-    <h1>{{ $route.params.address }}</h1>
+    <h1>{{ location.address }}</h1>
 
     <div class="mapouter d-flex justify-content-center">
       
         <div class="gmap_canvas mr-4" style="display: inline-block;">
-          <iframe width="450" height="300" id="gmap_canvas" v-bind:src="'https://maps.google.com/maps?q=' + $route.params.address + '%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+          <iframe width="450" height="300" id="gmap_canvas" v-bind:src="'https://maps.google.com/maps?q=' + location.address + '%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
         </div>
 
         <div style="display: inline-block;">
@@ -37,8 +37,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ wish.idea }}</h5>
           <p class="card-text">{{ wish.votes }}</p>
-          <a v-on:click="downVote($route.params.address, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
-          <a v-on:click="upVote($route.params.address, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
+          <a v-on:click="downVote(location.address, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
+          <a v-on:click="upVote(location.address, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
         </div>
       </div>
     </div>
@@ -51,13 +51,14 @@ import axios from 'axios';
 export default {
   name: 'Wishlist',
   data: () => ({
-    wishes: []
+    wishes: [],
+    location: {}
   }),
   methods : {
     handleSubmit: function() {
       let idea = document.querySelector('.form-control');
       if (idea.value) {
-        this.addIdea(this.$route.params.address, idea.value);
+        this.addIdea(this.data.location.address, idea.value);
         idea.value = "";
       }
     },
@@ -111,14 +112,14 @@ export default {
     },
     fetchWishes: async function() {
       try {
-        const address = this.$route.params.address;
+        const locationId = this.$route.params.locationId;
         const result = await axios({
           url: '/graphql',
           method: 'post',
           data: {
             query: `
                 {
-                  location(address:"${address}") {
+                  location(id:"${locationId}") {
                     suggestions {
                       idea
                       votes
@@ -128,6 +129,7 @@ export default {
               `
           }
         });
+        this.location = result.data.data.location;
         let sortedWishes = result.data.data.location.suggestions.sort((a,b) => b.votes - a.votes);
         this.wishes = sortedWishes;
       } catch (error) {

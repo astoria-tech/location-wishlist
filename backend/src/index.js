@@ -18,7 +18,7 @@ const typeDefs = gql`
   type Location {
     address: String
     createdAt: String
-    isApproved: Boolean
+    approved: Boolean
     suggestions: [Suggestion]
   }
 
@@ -48,7 +48,7 @@ const resolvers = {
     approvedLocations: async (parent, args, { models }) => {
       return await models.Location.findAll({
         where: {
-          isApproved: true
+          approved: true
         },
         include: [models.Suggestion]
       });
@@ -56,7 +56,7 @@ const resolvers = {
     submittedLocations: async (parent, args, { models }) => {
       return await models.Location.findAll({
         where: {
-          isApproved: false
+          approved: false
         },
         include: [models.Suggestion]
       });
@@ -188,9 +188,9 @@ const resolvers = {
             },
             { transaction: t }
           ).then(async location => {
-            location.isApproved = !location.isApproved;
+            location.approved = !location.approved;
             await location.save();
-            return location.isApproved
+            return location.approved;
           });
         })
         .catch(console.error);
@@ -208,7 +208,7 @@ const resolvers = {
             { transaction: t }
           ).then(async location => {
             await location.destroy();
-            return location.isApproved
+            return location.approved;
           });
         })
         .catch(console.error);
@@ -240,18 +240,14 @@ sequelize.sync({ force: seedData }).then(async () => {
 });
 
 const createLocations = async () => {
-  await models.Location.create(
-    {
-      address: "40-12 Broadway",
-      isApproved: true
-    }
-  )
-  await models.Location.create(
-    {
-      address: "29-10 Broadway",
-      isApproved: true
-    }
-  )
+  await models.Location.create({
+    address: "40-12 Broadway",
+    approved: true
+  });
+  await models.Location.create({
+    address: "29-10 Broadway",
+    approved: true
+  });
   await models.Location.create(
     {
       address: "29-34 38th Street"

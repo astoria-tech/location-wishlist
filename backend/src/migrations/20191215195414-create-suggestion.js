@@ -9,7 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       idea: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      votes: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

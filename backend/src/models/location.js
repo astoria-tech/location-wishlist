@@ -1,16 +1,10 @@
-const location = (sequelize, DataTypes) => {
-    const Location = sequelize.define('location', {
-      address: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false
-      }
-    });
-
-    Location.associate = models => {
-        models.Location.hasMany(models.Suggestion, { onDelete: 'CASCADE'});
-    }
-    return Location;
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const Location = sequelize.define('Location', {
+    address: DataTypes.STRING
+  }, {});
+  Location.associate = function(models) {
+    models.Location.hasMany(models.Suggestion, { onDelete: "CASCADE" });
   };
-
-module.exports = location;
+  return Location;
+};

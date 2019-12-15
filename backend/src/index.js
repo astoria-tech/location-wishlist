@@ -2,7 +2,7 @@ const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 
 const sequelize = require("./models").sequelize;
-const models = require("./models").models;
+const models = require("./models");
 
 const PORT = process.env.PORT || 3000;
 
@@ -10,11 +10,15 @@ const PORT = process.env.PORT || 3000;
 const typeDefs = gql`
   type Query {
     locations: [Location]
+    approvedLocations: [Location]
+    submittedLocations: [Location]
     location(address: String!): Location
   }
 
   type Location {
     address: String
+    createdAt: String
+    isApproved: Boolean
     suggestions: [Suggestion]
   }
 
@@ -25,6 +29,8 @@ const typeDefs = gql`
 
   type Mutation {
     addLocation(address: String!): Boolean
+    approveLocation(address: String!): Boolean
+    rejectLocation(address: String!): Boolean
     addIdea(address: String!, idea: String!): Boolean
     upVote(address: String!, idea: String!): Int
     downVote(address: String!, idea: String!): Int
@@ -36,6 +42,22 @@ const resolvers = {
   Query: {
     locations: async (parent, args, { models }) => {
       return await models.Location.findAll({
+        include: [models.Suggestion]
+      });
+    },
+    approvedLocations: async (parent, args, { models }) => {
+      return await models.Location.findAll({
+        where: {
+          isApproved: true
+        },
+        include: [models.Suggestion]
+      });
+    },
+    submittedLocations: async (parent, args, { models }) => {
+      return await models.Location.findAll({
+        where: {
+          isApproved: false
+        },
         include: [models.Suggestion]
       });
     },
@@ -153,7 +175,44 @@ const resolvers = {
             });
           })
           .catch(console.error);
-    }
+    },
+    approveLocation: async (parent, args, { models }) => {
+      const { address, idea } = args;
+      return await sequelize
+        .transaction(t => {
+          return models.Location.findOne(
+            {
+              where: {
+                address
+              }
+            },
+            { transaction: t }
+          ).then(async location => {
+            location.isApproved = !location.isApproved;
+            await location.save();
+            return location.isApproved
+          });
+        })
+        .catch(console.error);
+    },
+    rejectLocation: async (parent, args, { models }) => {
+      const { address, idea } = args;
+      return await sequelize
+        .transaction(t => {
+          return models.Location.findOne(
+            {
+              where: {
+                address
+              }
+            },
+            { transaction: t }
+          ).then(async location => {
+            await location.destroy();
+            return location.isApproved
+          });
+        })
+        .catch(console.error);
+    },
   }
 };
 
@@ -167,11 +226,45 @@ const server = new ApolloServer({
 
 const app = express();
 server.applyMiddleware({ app });
+const seedData = false;
+sequelize.sync({ force: seedData }).then(async () => {
+  if (seedData) {
+    createLocations();
+  }
 
-sequelize.sync().then(async () => {
   app.listen({ port: PORT }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
     )
   );
 });
+
+const createLocations = async () => {
+  await models.Location.create(
+    {
+      address: "40-12 Broadway",
+      isApproved: true
+    }
+  )
+  await models.Location.create(
+    {
+      address: "29-10 Broadway",
+      isApproved: true
+    }
+  )
+  await models.Location.create(
+    {
+      address: "29-34 38th Street"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "40-20 Steinway Street"
+    }
+  )
+  await models.Location.create(
+    {
+      address: "32-13 Broadway"
+    }
+  )
+}

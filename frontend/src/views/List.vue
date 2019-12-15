@@ -6,6 +6,7 @@
         <a :href="'/wishlist/' + location.address">{{ location.address }}</a>
       </li>
     </ul>
+    <p v-if="!locations.length">This list is currently empty. Check back soon for new locations :)</p>
   </div>
 </template>
 
@@ -19,24 +20,25 @@ export default {
       errors: []
     }
   },
-
-  created() {
-  axios({
-    url: '/graphql',
-    method: 'post',
-    data: {
-      query: `
-          {
-            locations {
-              address
+  async created() {
+      try {
+          const result = await axios({
+            url: '/graphql',
+            method: 'post',
+            data: {
+              query: `
+                  {
+                    approvedLocations {
+                      address
+                    }
+                  }
+                `
             }
-          }
-        `
-    }
-  }).then((result) => {
-    this.locations = result.data.data.locations
-  });
-
+          });
+          this.locations = result.data.data.approvedLocations;
+      } catch (error) {
+          this.errors.push(error);
+      }
   }
 }
 </script>

@@ -2,7 +2,7 @@ const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 
 const sequelize = require("./models").sequelize;
-const models = require("./models").models;
+const models = require("./models");
 
 const PORT = process.env.PORT || 3000;
 

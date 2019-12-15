@@ -11,6 +11,9 @@ module.exports = {
       address: {
         type: Sequelize.STRING
       },
+      isApproved: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

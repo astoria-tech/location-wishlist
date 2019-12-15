@@ -14,7 +14,7 @@
           <img src="http://placehold.jp/3d4070/ffffff/450x300.png?css=%7B%22border-radius%22%3A%2215px%22%7D">
         </div>
     </div>
-
+    <qrcode-vue :value="url"></qrcode-vue>
     <div class="mt-3 mb-5">
 
       <p>Looks like this storefront is empty!</p>
@@ -47,11 +47,16 @@
 
 <script>
 import axios from 'axios';
+import QrcodeVue from 'qrcode.vue';
 
 export default {
   name: 'Wishlist',
+  components: {
+    QrcodeVue
+  },
   data: () => ({
-    wishes: []
+    wishes: [],
+    url: window.location.href
   }),
   methods : {
     handleSubmit: function() {

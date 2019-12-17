@@ -52,7 +52,8 @@ export default {
   name: 'Wishlist',
   data: () => ({
     wishes: [],
-    location: {}
+    location: {},
+    errors: []
   }),
   methods : {
     handleSubmit: function() {
@@ -119,7 +120,8 @@ export default {
           data: {
             query: `
                 {
-                  location(id:"${locationId}") {
+                  location(id: ${locationId}) {
+                    address
                     suggestions {
                       idea
                       votes
@@ -130,8 +132,11 @@ export default {
           }
         });
         this.location = result.data.data.location;
-        let sortedWishes = result.data.data.location.suggestions.sort((a,b) => b.votes - a.votes);
-        this.wishes = sortedWishes;
+
+        if (this.location.suggestions) {
+          const sortedWishes = this.location.suggestions.sort((a,b) => b.votes - a.votes);
+          this.wishes = sortedWishes;
+        }
       } catch (error) {
           this.errors.push(error);
       }

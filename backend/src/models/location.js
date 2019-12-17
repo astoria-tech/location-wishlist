@@ -3,6 +3,12 @@ module.exports = (sequelize, DataTypes) => {
   const Location = sequelize.define(
     "Location",
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       address: {
         type: DataTypes.STRING,
         unique: true,
@@ -10,8 +16,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       approved: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      createdAt: {
         allowNull: false,
-        defaultValue: false
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE
       }
     },
     {}

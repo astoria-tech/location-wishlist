@@ -3,7 +3,7 @@
     <h1>All Vacant Locations</h1>
     <ul class="mt-4">
       <li v-for="location in locations" v-bind:key="location.address">
-        <a :href="'/wishlist/' + location.address">{{ location.address }}</a>
+        <a :href="'/wishlist/' + location.id">{{ location.address }}</a>
       </li>
     </ul>
     <p v-if="!locations.length">This list is currently empty. Check back soon for new locations :)</p>
@@ -29,6 +29,7 @@ export default {
               query: `
                   {
                     approvedLocations {
+                      id
                       address
                     }
                   }

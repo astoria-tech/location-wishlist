@@ -12,10 +12,11 @@ const typeDefs = gql`
     locations: [Location]
     approvedLocations: [Location]
     submittedLocations: [Location]
-    location(address: String!): Location
+    location(id: Int!): Location
   }
 
   type Location {
+    id: Int
     address: String
     createdAt: String
     approved: Boolean
@@ -64,7 +65,7 @@ const resolvers = {
     location: async (parent, args, { models }) => {
       return await models.Location.findOne({
         where: {
-          address: args.address
+          id: args.id
         },
         include: [models.Suggestion]
       });

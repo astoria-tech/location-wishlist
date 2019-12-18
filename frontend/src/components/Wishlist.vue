@@ -37,8 +37,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ wish.idea }}</h5>
           <p class="card-text">{{ wish.votes }}</p>
-          <a v-on:click="downVote(location.address, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
-          <a v-on:click="upVote(location.address, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
+          <a v-on:click="downVote(location.id, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
+          <a v-on:click="upVote(location.id, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
         </div>
       </div>
     </div>
@@ -57,13 +57,13 @@ export default {
   }),
   methods : {
     handleSubmit: function() {
-      let idea = document.querySelector('.form-control');
+      const idea = document.querySelector('.form-control');
       if (idea.value) {
-        this.addIdea(this.data.location.address, idea.value);
+        this.addIdea(this.location.id, idea.value);
         idea.value = "";
       }
     },
-    addIdea: async function (address, idea) {
+    addIdea: async function (id, idea) {
       await axios({
         url: '/graphql',
         method: 'post',
@@ -71,7 +71,7 @@ export default {
           query: `
             mutation {
               addIdea(
-                address: "${address}",
+                id: "${id}",
                 idea: "${idea}")
             }
           `
@@ -79,7 +79,7 @@ export default {
       });
       this.fetchWishes()
     },
-    upVote: async function (address, idea) {
+    upVote: async function (id, idea) {
       await axios({
         url: '/graphql',
         method: 'post',
@@ -87,7 +87,7 @@ export default {
           query: `
             mutation {
               upVote(
-                address: "${address}",
+                id: "${id}",
                 idea: "${idea}")
             }
           `
@@ -95,7 +95,7 @@ export default {
       });
       this.fetchWishes()
     },
-    downVote: async function (address, idea) {
+    downVote: async function (id, idea) {
       await axios({
         url: '/graphql',
         method: 'post',
@@ -103,7 +103,7 @@ export default {
           query: `
             mutation {
               downVote(
-                address: "${address}",
+                id: "${id}",
                 idea: "${idea}")
             }
           `
@@ -121,8 +121,9 @@ export default {
             query: `
                 {
                   location(id: "${locationId}") {
+                    id
                     address
-                    suggestions {
+                    Suggestions {
                       idea
                       votes
                     }
@@ -133,8 +134,8 @@ export default {
         });
         this.location = result.data.data.location;
 
-        if (this.location.suggestions) {
-          const sortedWishes = this.location.suggestions.sort((a,b) => b.votes - a.votes);
+        if (this.location.Suggestions) {
+          const sortedWishes = this.location.Suggestions.sort((a,b) => b.votes - a.votes);
           this.wishes = sortedWishes;
         }
       } catch (error) {

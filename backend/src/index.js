@@ -20,7 +20,7 @@ const typeDefs = gql`
     address: String
     createdAt: String
     approved: Boolean
-    suggestions: [Suggestion]
+    Suggestions: [Suggestion]
   }
 
   type Suggestion {
@@ -30,11 +30,11 @@ const typeDefs = gql`
 
   type Mutation {
     addLocation(address: String!): Boolean
-    approveLocation(address: String!): Boolean
-    rejectLocation(address: String!): Boolean
-    addIdea(address: String!, idea: String!): Boolean
-    upVote(address: String!, idea: String!): Int
-    downVote(address: String!, idea: String!): Int
+    approveLocation(id: String!): Boolean
+    rejectLocation(id: String!): Boolean
+    addIdea(id: String!, idea: String!): Boolean
+    upVote(id: String!, idea: String!): Int
+    downVote(id: String!, idea: String!): Int
   }
 `;
 
@@ -88,9 +88,9 @@ const resolvers = {
       return created;
     },
     addIdea: async (parent, args, { models }) => {
-      const { address, idea } = args;
-      if (address.trim() == "") {
-        throw "Address can't be empty string";
+      const { id, idea } = args;
+      if (id.trim() == "") {
+        throw "Location ID can't be empty string";
       }
       if (idea.trim() == "") {
         throw "Idea can't be empty string";
@@ -100,7 +100,7 @@ const resolvers = {
           return models.Location.findOne(
             {
               where: {
-                address
+                id
               }
             },
             { transaction: t }
@@ -122,7 +122,7 @@ const resolvers = {
       return created;
     },
     upVote: async (parent, args, { models }) => {
-      const { address, idea } = args;
+      const { id, idea } = args;
 
       return await sequelize
         .transaction(t => {
@@ -135,7 +135,7 @@ const resolvers = {
                 {
                   model: models.Location,
                   where: {
-                    address
+                    id
                   }
                 }
               ]
@@ -150,7 +150,7 @@ const resolvers = {
         .catch(console.error);
     },
     downVote: async (parent, args, { models }) => {
-        const { address, idea } = args;
+        const { id, idea } = args;
 
         return await sequelize
           .transaction(t => {
@@ -163,7 +163,7 @@ const resolvers = {
                   {
                     model: models.Location,
                     where: {
-                      address
+                      id
                     }
                   }
                 ]
@@ -178,13 +178,13 @@ const resolvers = {
           .catch(console.error);
     },
     approveLocation: async (parent, args, { models }) => {
-      const { address, idea } = args;
+      const { id, idea } = args;
       return await sequelize
         .transaction(t => {
           return models.Location.findOne(
             {
               where: {
-                address
+                id
               }
             },
             { transaction: t }
@@ -197,13 +197,13 @@ const resolvers = {
         .catch(console.error);
     },
     rejectLocation: async (parent, args, { models }) => {
-      const { address, idea } = args;
+      const { id, idea } = args;
       return await sequelize
         .transaction(t => {
           return models.Location.findOne(
             {
               where: {
-                address
+                id
               }
             },
             { transaction: t }

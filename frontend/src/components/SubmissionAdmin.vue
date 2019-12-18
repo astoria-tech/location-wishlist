@@ -37,6 +37,7 @@ export default {
             query: `
                 {
                   submittedLocations {
+                    id
                     address
                     createdAt
                   }
@@ -50,9 +51,9 @@ export default {
     }
   },
   methods: {
-    updateLocations: function(address) {
+    updateLocations: function(id) {
       this.locations = this.locations.filter(location => {
-        return location.address !== address;
+        return location.id !== id;
       })
     }
   }

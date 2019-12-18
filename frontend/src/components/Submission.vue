@@ -7,8 +7,8 @@
       {{formatDate(location.createdAt)}}
     </div>
     <div class="button-container m-3 mb-3">
-      <a v-on:click="approveLocation(location.address)" href="#" class="btn btn-outline-success mr-3">Approve</a>
-      <a v-on:click="rejectLocation(location.address)" href="#" class="btn btn-outline-success">Reject</a>
+      <a v-on:click="approveLocation(location.id)" href="#" class="btn btn-outline-success mr-3">Approve</a>
+      <a v-on:click="rejectLocation(location.id)" href="#" class="btn btn-outline-success">Reject</a>
     </div>
   </div>
 </template>
@@ -25,7 +25,7 @@ export default {
   }, 
   mixins: [formatDate],
   methods: {
-    approveLocation: async function (address) {
+    approveLocation: async function (id) {
       await axios({
         url: '/graphql',
         method: 'post',
@@ -33,15 +33,15 @@ export default {
           query: `
             mutation {
               approveLocation(
-                address: "${address}"
+                id: "${id}"
               )
             }
           `
         }
       });
-      this.$emit("update-locations", address)
+      this.$emit("update-locations", id)
     },
-    rejectLocation: async function (address) {
+    rejectLocation: async function (id) {
       await axios({
         url: '/graphql',
         method: 'post',
@@ -49,13 +49,13 @@ export default {
           query: `
             mutation {
               rejectLocation(
-                address: "${address}"
+                id: "${id}"
               )
             }
           `
         }
       });
-      this.$emit("update-locations", address)
+      this.$emit("update-locations", id)
     }
   }
 };

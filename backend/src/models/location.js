@@ -4,10 +4,10 @@ module.exports = (sequelize, DataTypes) => {
     "Location",
     {
       id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER
+        primaryKey: true
       },
       address: {
         type: DataTypes.STRING,

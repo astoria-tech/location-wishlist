@@ -120,7 +120,7 @@ export default {
           data: {
             query: `
                 {
-                  location(id: ${locationId}) {
+                  location(id: "${locationId}") {
                     address
                     suggestions {
                       idea

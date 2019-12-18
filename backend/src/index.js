@@ -12,11 +12,11 @@ const typeDefs = gql`
     locations: [Location]
     approvedLocations: [Location]
     submittedLocations: [Location]
-    location(id: Int!): Location
+    location(id: String!): Location
   }
 
   type Location {
-    id: Int
+    id: String
     address: String
     createdAt: String
     approved: Boolean

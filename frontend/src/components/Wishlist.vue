@@ -3,20 +3,16 @@
     <h1>{{ location.address }}</h1>
 
     <div class="mapouter d-flex justify-content-center">
-      
         <div class="gmap_canvas mr-4" style="display: inline-block;">
           <iframe width="450" height="300" id="gmap_canvas" v-bind:src="'https://maps.google.com/maps?q=' + location.address + '%20Astoria%2C%20NY&t=&z=13&ie=UTF8&iwloc=&output=embed'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
         </div>
 
         <div style="display: inline-block;">
-
-          
-          <img src="http://placehold.jp/3d4070/ffffff/450x300.png?css=%7B%22border-radius%22%3A%2215px%22%7D">
+          <img width="450" height="300" v-bind:src="location.imageURL">
         </div>
     </div>
 
     <div class="mt-3 mb-5">
-
       <p>Looks like this storefront is empty!</p>
       <p>Submit &amp; vote on what you want this location to be!</p>
 
@@ -123,6 +119,7 @@ export default {
                   location(id: "${locationId}") {
                     id
                     address
+                    imageURL
                     Suggestions {
                       idea
                       votes
@@ -137,6 +134,10 @@ export default {
         if (this.location.Suggestions) {
           const sortedWishes = this.location.Suggestions.sort((a,b) => b.votes - a.votes);
           this.wishes = sortedWishes;
+        }
+
+        if (! this.location.imageURL) {
+          this.location.imageURL = "http://placehold.jp/3d4070/ffffff/450x300.png?css=%7B%22border-radius%22%3A%2215px%22%7D";
         }
       } catch (error) {
           this.errors.push(error);

@@ -18,8 +18,10 @@ const typeDefs = gql`
   type Location {
     id: String
     address: String
-    createdAt: String
+    imageURL: String
     approved: Boolean
+    createdAt: String
+    updatedAt: String
     Suggestions: [Suggestion]
   }
 

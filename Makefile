@@ -27,7 +27,7 @@ postgres.shell:
 
 migrations.create-blank: postgres.start
 	docker-compose run backend \
-	  npx sequelize migrations:create --name new-migration
+	  npx sequelize migration:generate --name new-migration
 
 migrations.run: postgres.start
 	docker-compose run backend \

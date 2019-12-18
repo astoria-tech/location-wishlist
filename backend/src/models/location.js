@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: {
         allowNull: false,
         type: DataTypes.DATE
+      },
+      imageURL: {
+        type: DataTypes.STRING,
       }
     },
     {}

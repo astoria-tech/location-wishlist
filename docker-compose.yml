@@ -13,11 +13,13 @@ services:
   
   backend:
     labels:
+      shipyard.before: 'npx sequelize db:migrate'
       shipyard.route: '/graphql'
     build: 'backend'
     command: yarn start
     volumes:
       - ./backend/src/:/app/src/
+      - ./backend/migrations/:/app/migrations/
     environment:
       - PORT=3000
       - DATABASE=wishlist

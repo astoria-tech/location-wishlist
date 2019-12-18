@@ -1,26 +1,36 @@
 PROJECT_NAME=$(shell basename $(PWD))
 
-dev: clean build run
+dev: clean build migrations.run run
+reset: data.clean postgres.start migrations.run
+
+build:
+	docker-compose build
 
 clean:
 	docker-compose stop -t0
 	docker-compose rm -f
 
-clean-data: clean
+run: postgres.start
+	docker-compose up
+
+data.clean: clean
 	docker volume rm $(PROJECT_NAME)_postgres
 
-build:
-	docker-compose build
-
-start-postgres:
+postgres.start:
 	@printf '> Starting Postgres...'
 	@docker-compose up -d postgres > /dev/null 2>&1
 	@docker-compose exec postgres sh -c 'while ! nc -z postgres 5432; do sleep 0.1; done'
 	@echo ' done'
 
-prepare-db: start-postgres
-	# TODO
-	@docker-compose run backend sh -c ""
+postgres.shell:
+	docker-compose exec postgres psql -U wishlist
 
-run:
-	docker-compose up
+migrations.create-blank: postgres.start
+	docker-compose run backend \
+	  npx sequelize migrations:create --name new-migration
+
+migrations.run: postgres.start
+	docker-compose run backend \
+	  npx sequelize db:migrate
+
+

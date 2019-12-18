@@ -25,11 +25,8 @@ module.exports = {
         type: Sequelize.DATE
       },
       LocationId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Location', // name of Target model
-          key: 'id', // key in Target model that we're referencing
-        },
+        type: Sequelize.UUID,
+        references: { model: 'Locations', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }

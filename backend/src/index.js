@@ -108,11 +108,11 @@ const resolvers = {
             return models.Suggestion.findOrCreate({
               where: {
                 idea,
-                locationId: location.id
+                LocationId: location.id
               },
               defaults: {
                 idea,
-                locationId: location.id,
+                LocationId: location.id,
                 votes: 0
               }
             });

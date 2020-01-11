@@ -10,9 +10,17 @@ const PORT = process.env.PORT || 3000;
 const typeDefs = gql`
   type Query {
     locations: [Location]
+    users: [User!]
     approvedLocations: [Location]
     submittedLocations: [Location]
     location(id: String!): Location
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
   }
 
   type Location {
@@ -37,12 +45,20 @@ const typeDefs = gql`
     addIdea(id: String!, idea: String!): Boolean
     upVote(id: String!, idea: String!): Int
     downVote(id: String!, idea: String!): Int
+    addUser(
+      name: String!
+      email: String!
+      password: String!
+    ): User!
   }
 `;
 
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
+    users: async (parent, args, { models }) => {
+      return await models.User.findAll();
+    },
     locations: async (parent, args, { models }) => {
       return await models.Location.findAll({
         include: [models.Suggestion]
@@ -74,20 +90,26 @@ const resolvers = {
     }
   },
   Mutation: {
-    addLocation: async (parent, args, { models }) => {
-      const { address } = args;
-      if (address.trim() == "") {
-        throw "Address can't be empty string";
+    addUser: async (
+      parent,
+      { name, email, password },
+    ) => {
+      if (name.trim() == "") {
+        throw "Name field can't be empty";
       }
-      const [location, created] = await models.Location.findOrCreate({
-        where: {
-          address
-        },
-        defaults: {
-          address
-        }
+      if (email.trim() == "") {
+        throw "Email field can't be empty";
+      }
+      if (password.trim() == "") {
+        throw "Password field can't be empty"; }
+
+      const user = await models.User.create({
+        name,
+        email,
+        password,
       });
-      return created;
+
+      return user;
     },
     addIdea: async (parent, args, { models }) => {
       const { id, idea } = args;

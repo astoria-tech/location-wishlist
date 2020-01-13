@@ -1,8 +1,20 @@
+require("dotenv").config();
+
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
+const { AuthenticationError, UserInputError } = require("apollo-server");
 
 const sequelize = require("./models").sequelize;
 const models = require("./models");
+
+const jwt = require("jsonwebtoken");
+
+const createToken = async (user, secret, expiresIn) => {
+  const { id, name, email } = user;
+  return await jwt.sign({ id, name, email }, secret, {
+    expiresIn,
+  });
+}
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,7 +32,10 @@ const typeDefs = gql`
     id: ID!
     name: String!
     email: String!
-    password: String!
+  }
+
+  type Token {
+    token: String!
   }
 
   type Location {
@@ -45,11 +60,12 @@ const typeDefs = gql`
     addIdea(id: String!, idea: String!): Boolean
     upVote(id: String!, idea: String!): Int
     downVote(id: String!, idea: String!): Int
-    addUser(
+    signUp(
       name: String!
       email: String!
       password: String!
-    ): User!
+    ): Token!
+    signIn(login: String!, password: String!): Token!
   }
 `;
 
@@ -90,9 +106,10 @@ const resolvers = {
     }
   },
   Mutation: {
-    addUser: async (
+    signUp: async (
       parent,
       { name, email, password },
+      { secret }
     ) => {
       if (name.trim() == "") {
         throw "Name field can't be empty";
@@ -109,7 +126,26 @@ const resolvers = {
         password,
       });
 
-      return user;
+      return { token: createToken(user, secret, '30m') };
+    },
+    signIn: async (
+      parent,
+      { login, password },
+      { models, secret },
+    ) => {
+      const user = await models.User.findByLogin(login);
+
+      if (!user) {
+        throw new UserInputError("No user found with this email.");
+      }
+
+      const isValid = await user.validatePassword(password);
+
+      if (!isValid) {
+        throw new AuthenticationError("Invalid password.");
+      }
+
+      return { token: createToken(user, secret, '30m') };
     },
     addIdea: async (parent, args, { models }) => {
       const { id, idea } = args;
@@ -245,7 +281,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: {
-    models
+    models,
+    secret: process.env.SECRET,
   }
 });
 

@@ -1,26 +1,12 @@
 <template>
   <div class="body">
     <h1 class="mb-5">Vacant Location Wishlists</h1>
-    <p>Have you ever walked by a vacant store and wished it would open as a new bookstore?</p>
+    <p>Ever walk by a vacant store and wish it would open as a new bookstore?</p>
     <p>Or a daycare? Or an archery range?</p>
     <p>Well, now is the time to be heard!</p>
 
-    <div class="mt-5 mb-5">
-      <p class="text-success h3">Submit a vacant location below</p>
-
-      <div class="container mt-3">
-        <div class="row justify-content-center">
-          <form @submit.prevent="handleSubmit" class="input-group col-lg-6 col-md-8">
-            <input type="text" class="form-control" placeholder="Enter address, ex: 40-05 Broadway" aria-label="Vacant location address input" aria-describedby="button-addon2">
-            <div class="input-group-append">
-              <button type="submit" class="btn btn-outline-success" id="button-addon2">Submit</button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="mt-5 message-box text-success"></div>
-    </div>
-    <p class="mt-5"><strong>Look for wishlist QR stickers near vacant storefronts, scan them, and cast your vote!</strong></p>
+    <p class="mt-4"><strong>Look for wishlist QR stickers near vacant storefronts, scan them, and cast your vote!</strong></p>
+    <a href="/new-location" class="btn btn-lg btn-outline-success mt-5">Submit a new location</a>
   </div>
 </template>
 

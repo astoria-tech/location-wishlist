@@ -31,7 +31,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addLocation(address: String!): Boolean
+    addLocation(address: String!, photo: Upload!): Boolean
     approveLocation(id: String!): Boolean
     rejectLocation(id: String!): Boolean
     addIdea(id: String!, idea: String!): Boolean

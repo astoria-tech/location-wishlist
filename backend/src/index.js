@@ -106,11 +106,22 @@ const resolvers = {
     }
   },
   Mutation: {
-    signUp: async (
-      parent,
-      { name, email, password },
-      { secret }
-    ) => {
+    addLocation: async (parent, args, { models }) => {
+      const { address } = args;
+      if (address.trim() == "") {
+        throw "Address field can't be empty";
+      }
+      const [location, created] = await models.Location.findOrCreate({
+        where: {
+          address
+        },
+        defaults: {
+          address
+        }
+      });
+      return created;
+    },
+    signUp: async (parent, { name, email, password }, { secret }) => {
       if (name.trim() == "") {
         throw "Name field can't be empty";
       }
@@ -118,21 +129,18 @@ const resolvers = {
         throw "Email field can't be empty";
       }
       if (password.trim() == "") {
-        throw "Password field can't be empty"; }
+        throw "Password field can't be empty";
+      }
 
       const user = await models.User.create({
         name,
         email,
-        password,
+        password
       });
 
-      return { token: createToken(user, secret, '30m') };
+      return { token: createToken(user, secret, "30m") };
     },
-    signIn: async (
-      parent,
-      { login, password },
-      { models, secret },
-    ) => {
+    signIn: async (parent, { login, password }, { models, secret }) => {
       const user = await models.User.findByLogin(login);
 
       if (!user) {
@@ -145,7 +153,7 @@ const resolvers = {
         throw new AuthenticationError("Invalid password.");
       }
 
-      return { token: createToken(user, secret, '30m') };
+      return { token: createToken(user, secret, "30m") };
     },
     addIdea: async (parent, args, { models }) => {
       const { id, idea } = args;
@@ -210,32 +218,32 @@ const resolvers = {
         .catch(console.error);
     },
     downVote: async (parent, args, { models }) => {
-        const { id, idea } = args;
+      const { id, idea } = args;
 
-        return await sequelize
-          .transaction(t => {
-            return models.Suggestion.findOne(
-              {
-                where: {
-                  idea
-                },
-                include: [
-                  {
-                    model: models.Location,
-                    where: {
-                      id
-                    }
-                  }
-                ]
+      return await sequelize
+        .transaction(t => {
+          return models.Suggestion.findOne(
+            {
+              where: {
+                idea
               },
-              { transaction: t }
-            ).then(async suggestion => {
-              suggestion.votes--;
-              await suggestion.save();
-              return suggestion.votes;
-            });
-          })
-          .catch(console.error);
+              include: [
+                {
+                  model: models.Location,
+                  where: {
+                    id
+                  }
+                }
+              ]
+            },
+            { transaction: t }
+          ).then(async suggestion => {
+            suggestion.votes--;
+            await suggestion.save();
+            return suggestion.votes;
+          });
+        })
+        .catch(console.error);
     },
     approveLocation: async (parent, args, { models }) => {
       const { id, idea } = args;
@@ -273,7 +281,7 @@ const resolvers = {
           });
         })
         .catch(console.error);
-    },
+    }
   }
 };
 

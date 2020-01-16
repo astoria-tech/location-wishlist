@@ -79,14 +79,12 @@ const resolvers = {
       if (address.trim() == "") {
         throw "Address can't be empty string";
       }
+
       const [location, created] = await models.Location.findOrCreate({
-        where: {
-          address
-        },
-        defaults: {
-          address
-        }
+        where: { address },
+        defaults: { address }
       });
+
       return created;
     },
     addIdea: async (parent, args, { models }) => {

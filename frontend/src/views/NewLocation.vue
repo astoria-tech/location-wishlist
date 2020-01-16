@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import ADD_LOCATION from "../graphql/addLocation";
 
 export default {
   name: 'NewLocation',
@@ -40,36 +40,20 @@ export default {
   },
 
   methods: {
-    handleSubmit: function() {
+    handleSubmit: async function() {
+      let address = this.$refs.address.value;
       let photoFile = this.$refs.photo.files[0];
 
-      if (this.$refs.photo.value && this.$refs.address.value) {
-        // Prepare the request
-        let config = { headers: { 'content-type': 'multipart/form-data' } }
-        let data = new FormData();
-        data.append('photo[0]', photoFile, photoFile.name)
-
-        return axios.post('/graphql', data, config)
+      if (this.$refs.photo.value && address) {
+        await this.$apollo.mutate({
+          mutation: ADD_LOCATION,
+          variables: {
+            address,
+            photo: photoFile
+          },
+        });
+        this.message("Thank you for your entry! Your location will be public soon, check back in a bit.")
       }
-
-    },
-
-    addLocation: async function (address) {
-      await axios({
-        url: '/graphql',
-        method: 'post',
-        data: {
-          query: `
-            mutation {
-              addLocation(
-                address: "${address}"
-              )
-            }
-          `
-        }
-      });
-
-      this.message("Thank you for your entry! Your location will be public soon, check back in a bit.")
     },
 
     message: function(msg) {

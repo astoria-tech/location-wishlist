@@ -80,6 +80,8 @@ const resolvers = {
         throw "Address can't be empty string";
       }
 
+      console.log('DEBUG', args.photo);
+
       const [location, created] = await models.Location.findOrCreate({
         where: { address },
         defaults: { address }

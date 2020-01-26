@@ -33,8 +33,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ wish.idea }}</h5>
           <p class="card-text">{{ wish.votes }}</p>
-          <a v-on:click="downVote(location.id, wish.idea)" href="#" class="btn btn-outline-success">-1</a>
-          <a v-on:click="upVote(location.id, wish.idea)" href="#" class="btn btn-outline-success">+1</a>
+          <button v-on:click="downVote(location.id, wish.idea)" class="btn btn-outline-success">-1</button>
+          <button v-on:click="upVote(location.id, wish.idea)" class="btn btn-outline-success">+1</button>
         </div>
       </div>
     </div>
@@ -89,7 +89,7 @@ export default {
           `
         }
       });
-      this.fetchWishes()
+      this.fetchWishes();
     },
     downVote: async function (id, idea) {
       await axios({

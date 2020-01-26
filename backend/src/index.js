@@ -1,5 +1,31 @@
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
+const { Storage } = require('@google-cloud/storage');
+
+// Get base64 representation of GCP credentials from .env file
+const { GCP_ASTORIATECH_CREDS } = process.env;
+// Convert creds from base64 to JSON
+const gcpCreds = JSON.parse(Buffer.from(GCP_ASTORIATECH_CREDS, "base64").toString());
+const gcpBucketName = "astoria-tech-wishlist-images";
+const gcpStorageOptions = {
+  credentials: {
+    client_email: gcpCreds.client_email,
+    private_key: gcpCreds.private_key
+  },
+  projectId: gcpCreds.project_id
+}
+
+// Get reference to GCP bucket
+const storage = new Storage(gcpStorageOptions);
+const bucket = storage.bucket(gcpBucketName);
+
+// Call methods on bucket; this is just an example.
+bucket.exists().then(data => {
+    console.log(data); // returns [false] if the bucket doesn't exist
+  })
+  .catch(err => {
+    console.error(err.message);
+  });
 
 const sequelize = require("./models").sequelize;
 const models = require("./models");

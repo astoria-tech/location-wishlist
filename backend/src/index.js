@@ -26,6 +26,7 @@ const typeDefs = gql`
     approvedLocations: [Location]
     submittedLocations: [Location]
     location(id: String!): Location
+    me: User
   }
 
   type User {
@@ -65,7 +66,7 @@ const typeDefs = gql`
       name: String!
       email: String!
       password: String!
-    ): Token!
+    ): AuthPayload!
     signIn(login: String!, password: String!): AuthPayload!
   }
 `;
@@ -104,7 +105,8 @@ const resolvers = {
         },
         include: [models.Suggestion]
       });
-    }
+    },
+    me: async (parent, args, { currentUser }) => currentUser,
   },
   Mutation: {
     addLocation: async (parent, args, { models }) => {
@@ -139,7 +141,7 @@ const resolvers = {
         password
       });
 
-      return { token: createToken(user, secret, "30m") };
+      return { token: createToken(user, secret, "30m"), user };
     },
     signIn: async (parent, { login, password }, { models, secret }) => {
       const user = await models.User.findByLogin(login);
@@ -289,9 +291,16 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: {
-    models,
-    secret: process.env.SECRET,
+  context: async ({ req }) => {
+    const token = req.headers.authorization ? req.headers.authorization.slice(7) : null;
+    const secret = process.env.SECRET;
+    const currentUser = token ? await jwt.verify(token, secret) : null
+
+    return {
+      models,
+      secret,
+      currentUser,
+    }
   }
 });
 

@@ -47,14 +47,20 @@
     },
     methods: {
       confirm () {
-        // const { name, email, password } = this.$data;
+        const { email, password } = this.$data;
 
         if (this.login) {
           this.$apollo.mutate({
             mutation: SIGNIN_USER_MUTATION,
+            variables: {
+              login: email,
+              password: password
+            },
           }).then((result) => {
+            // console.log(result)
             const token = result.data.signIn.token
             onLogin(this.$apollo.provider.defaultClient, token)
+            this.$router.push({path: '/obscurepath'})
           }).catch((error) => {
             alert(error)
           })

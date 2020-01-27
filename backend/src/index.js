@@ -290,10 +290,13 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
+  context: ({ req }) => {
     const token = req.headers.authorization ? req.headers.authorization.slice(7) : null;
     const secret = process.env.SECRET;
-    const currentUser = token ? await jwt.verify(token, secret) : null
+    let currentUser;
+    jwt.verify(token, secret, function(err, decoded) {
+      currentUser = err ? null : decoded
+    })
 
     return {
       models,

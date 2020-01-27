@@ -35,9 +35,8 @@ const typeDefs = gql`
     email: String!
   }
 
-  type AuthPayload {
+  type Token {
     token: String!
-    user: User!
   }
 
   type Location {
@@ -66,8 +65,8 @@ const typeDefs = gql`
       name: String!
       email: String!
       password: String!
-    ): AuthPayload!
-    signIn(login: String!, password: String!): AuthPayload!
+    ): Token!
+    signIn(login: String!, password: String!): Token!
   }
 `;
 
@@ -141,7 +140,7 @@ const resolvers = {
         password
       });
 
-      return { token: createToken(user, secret, "30m"), user };
+      return { token: createToken(user, secret, "30m") };
     },
     signIn: async (parent, { login, password }, { models, secret }) => {
       const user = await models.User.findByLogin(login);
@@ -156,7 +155,7 @@ const resolvers = {
         throw new AuthenticationError("Invalid password.");
       }
 
-      return { token: createToken(user, secret, "30m"), user };
+      return { token: createToken(user, secret, "30m") };
     },
     addIdea: async (parent, args, { models }) => {
       const { id, idea } = args;

@@ -1,31 +1,36 @@
 <template>
-  <div>
-    <h4 class='mv3'>{{login ? 'Login' : 'Sign Up'}}</h4>
-    <div class='flex flex-column'>
-      <input
-        v-show="!login"
-        v-model="name"
-        type="text"
-        placeholder="Your name">
-      <input
-        v-model="email"
-        type="text"
-        placeholder="Your email address">
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password">
-    </div>
-    <div class='flex mt3'>
-      <div
-        class='pointer mr2 button'
-        @click="confirm()">
-        {{login ? 'login' : 'create account'}}
+  <div class="d-flex flex-column align-items-center">
+    <div>
+      <h4 class='mv3'>{{login ? 'Admin Login' : 'Sign Up'}}</h4>
+      <div class='d-flex flex-column mt-2 mb-2'>
+        <input
+          v-show="!login"
+          v-model="name"
+          type="text"
+          placeholder="Your name">
+        <input
+          class="mb-1 border rounded px-1"
+          v-model="email"
+          type="text"
+          placeholder="Email">
+        <input
+          class="border rounded px-1"
+          v-model="password"
+          type="password"
+          placeholder="Password">
       </div>
-      <div
-        class='pointer button'
-        @click="login = !login">
-        {{login ? 'need to create an account?' : 'already have an account?'}}
+      <div>
+        <div
+          class='btn btn-outline-success'
+          @click="confirm()">
+          {{login ? 'Log In' : 'create account'}}
+        </div>
+        <div
+          v-if="!login"
+          class='pointer button'
+          @click="login = !login">
+          {{login ? 'need to create an account?' : 'already have an account?'}}
+        </div>
       </div>
     </div>
   </div>
@@ -57,7 +62,6 @@
               password: password
             },
           }).then((result) => {
-            // console.log(result)
             const token = result.data.signIn.token
             onLogin(this.$apollo.provider.defaultClient, token)
             this.$router.push({path: '/obscurepath'})

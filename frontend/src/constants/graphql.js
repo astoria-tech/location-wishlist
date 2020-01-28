@@ -17,3 +17,15 @@ export const SUBMITTED_LOCATIONS_QUERY = gql`
     }
   }
 `;
+
+export const APPROVE_LOCATION_MUTATION = gql`
+  mutation ($id: String!) {
+    approveLocation(id: $id)
+  }
+`;
+
+export const REJECT_LOCATION_MUTATION = gql`
+  mutation ($id: String!) {
+    rejectLocation(id: $id)
+  }
+`;

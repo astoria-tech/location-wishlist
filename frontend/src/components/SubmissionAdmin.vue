@@ -12,7 +12,7 @@
       <h3 v-if="submittedLocations.length === 0">There are no pending submissions</h3>
     </div>
   </div>
-  <div v-else @click="loginRedirect()">Click here to login</div>
+  <a v-else href="/login">Click here to login</a>
 </template>
 
 <script>
@@ -51,10 +51,16 @@ export default {
   h1 {
     margin-bottom: 30px;
   }
+
   .submissions-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
     grid-gap: 15px;
     justify-content: center;
+  }
+  
+  a { 
+    color: #42b983; 
+    font-weight: 600;
   }
 </style>

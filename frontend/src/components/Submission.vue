@@ -30,8 +30,10 @@ export default {
         variables: {
           id: id.toString(),
         },
-      }).then(() => {
-        this.$emit("update-locations", id)
+      }).then((result) => {
+        if (result.data.approveLocation) {
+          this.$emit("update-locations", id)
+        }
       }).catch((error) => {
         alert(error)
       })
@@ -42,8 +44,10 @@ export default {
         variables: {
           id: id.toString(),
         },
-      }).then(() => {
-        this.$emit("update-locations", id)
+      }).then((result) => {
+        if (result.data.rejectLocation === false) {
+          this.$emit("update-locations", id)
+        }
       }).catch((error) => {
         alert(error)
       })

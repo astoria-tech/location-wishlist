@@ -29,3 +29,11 @@ export const REJECT_LOCATION_MUTATION = gql`
     rejectLocation(id: $id)
   }
 `;
+
+export const ME_QUERY = gql`
+  query {
+    me {
+      id
+    }
+  }
+`

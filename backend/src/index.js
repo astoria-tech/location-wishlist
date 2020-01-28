@@ -3,11 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { AuthenticationError, UserInputError } = require("apollo-server");
+const jwt = require("jsonwebtoken");
 
 const sequelize = require("./models").sequelize;
 const models = require("./models");
-
-const jwt = require("jsonwebtoken");
 
 const createToken = async (user, secret, expiresIn) => {
   const { id, name, email } = user;
@@ -247,42 +246,44 @@ const resolvers = {
         })
         .catch(console.error);
     },
-    approveLocation: async (parent, args, { models }) => {
-      const { id, idea } = args;
-      return await sequelize
-        .transaction(t => {
-          return models.Location.findOne(
-            {
-              where: {
-                id
-              }
-            },
-            { transaction: t }
-          ).then(async location => {
-            location.approved = !location.approved;
-            await location.save();
-            return location.approved;
-          });
-        })
-        .catch(console.error);
+    approveLocation: async (parent, { id }, { models, currentUser }) => {
+      if (currentUser) {
+        return await sequelize
+          .transaction(t => {
+            return models.Location.findOne(
+              {
+                where: {
+                  id
+                }
+              },
+              { transaction: t }
+            ).then(async location => {
+              location.approved = !location.approved;
+              await location.save();
+              return location.approved;
+            });
+          })
+          .catch(console.error);
+      }
     },
-    rejectLocation: async (parent, args, { models }) => {
-      const { id, idea } = args;
-      return await sequelize
-        .transaction(t => {
-          return models.Location.findOne(
-            {
-              where: {
-                id
-              }
-            },
-            { transaction: t }
-          ).then(async location => {
-            await location.destroy();
-            return location.approved;
-          });
-        })
-        .catch(console.error);
+    rejectLocation: async (parent, { id }, { models, currentUser }) => {
+      if (currentUser) {
+        return await sequelize
+          .transaction(t => {
+            return models.Location.findOne(
+              {
+                where: {
+                  id
+                }
+              },
+              { transaction: t }
+            ).then(async location => {
+              await location.destroy();
+              return location.approved;
+            });
+          })
+          .catch(console.error);
+      }
     }
   }
 };

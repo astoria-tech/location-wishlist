@@ -5,54 +5,36 @@
     <div class="submissions-container">
       <Submission
       :key="location.submission_id"
-      v-for="location in locations"
+      v-for="location in submittedLocations"
       :location="location"
       :id="location.submission_id"
       @update-locations="updateLocations"/>
-      <h3 v-if="locations.length === 0">There are no pending submissions</h3>
+      <h3 v-if="submittedLocations.length === 0">There are no pending submissions</h3>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import Submission from "./Submission";
+import { SUBMITTED_LOCATIONS_QUERY } from '../constants/graphql'
+
 export default {
-  name: "SubmissionAdmiPage",
+  name: "SubmissionAdminPage",
   components: {
     Submission
   },
   data() {
     return {
-      locations: [],
+      submittedLocations: [],
       errors: []
     }
   },
-  async created() {
-    try {
-        const result = await axios({
-          url: '/graphql',
-          method: 'post',
-          data: {
-            query: `
-                {
-                  submittedLocations {
-                    id
-                    address
-                    createdAt
-                  }
-                }
-              `
-          }
-        });
-        this.locations = result.data.data.submittedLocations;
-    } catch (error) {
-        this.errors.push(error);
-    }
+  apollo: {
+    submittedLocations: SUBMITTED_LOCATIONS_QUERY,
   },
   methods: {
     updateLocations: function(id) {
-      this.locations = this.locations.filter(location => {
+      this.submittedLocations = this.submittedLocations.filter(location => {
         return location.id !== id;
       })
     }

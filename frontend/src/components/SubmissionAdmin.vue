@@ -1,5 +1,5 @@
 <template>
-  <div id="submission-admin-page">
+  <div v-if="me" id="submission-admin-page">
     <h2>Locations Pending Verification</h2>
     <p class="mb-4">Make sure each location has a valid address and clear picture!</p>
     <div class="submissions-container">
@@ -12,11 +12,12 @@
       <h3 v-if="submittedLocations.length === 0">There are no pending submissions</h3>
     </div>
   </div>
+  <div v-else @click="loginRedirect()">Click here to login</div>
 </template>
 
 <script>
 import Submission from "./Submission";
-import { SUBMITTED_LOCATIONS_QUERY } from '../constants/graphql'
+import { SUBMITTED_LOCATIONS_QUERY, ME_QUERY } from '../constants/graphql'
 
 export default {
   name: "SubmissionAdminPage",
@@ -26,19 +27,23 @@ export default {
   data() {
     return {
       submittedLocations: [],
-      errors: []
+      me: false
     }
   },
   apollo: {
     submittedLocations: SUBMITTED_LOCATIONS_QUERY,
+    me: ME_QUERY
   },
   methods: {
-    updateLocations: function(id) {
+    updateLocations(id) {
       this.submittedLocations = this.submittedLocations.filter(location => {
         return location.id !== id;
       })
-    }
-  }
+    },
+    loginRedirect() {
+      this.$router.push('/login')
+    },
+  },
 };
 </script>
 

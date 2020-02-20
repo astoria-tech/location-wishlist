@@ -3,11 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { AuthenticationError, UserInputError } = require("apollo-server");
+const jwt = require("jsonwebtoken");
 
 const sequelize = require("./models").sequelize;
 const models = require("./models");
-
-const jwt = require("jsonwebtoken");
 
 const createToken = async (user, secret, expiresIn) => {
   const { id, name, email } = user;
@@ -26,6 +25,7 @@ const typeDefs = gql`
     approvedLocations: [Location]
     submittedLocations: [Location]
     location(id: String!): Location
+    me: User
   }
 
   type User {
@@ -103,7 +103,8 @@ const resolvers = {
         },
         include: [models.Suggestion]
       });
-    }
+    },
+    me: async (parent, args, { currentUser }) => currentUser,
   },
   Mutation: {
     addLocation: async (parent, args, { models }) => {
@@ -245,42 +246,44 @@ const resolvers = {
         })
         .catch(console.error);
     },
-    approveLocation: async (parent, args, { models }) => {
-      const { id, idea } = args;
-      return await sequelize
-        .transaction(t => {
-          return models.Location.findOne(
-            {
-              where: {
-                id
-              }
-            },
-            { transaction: t }
-          ).then(async location => {
-            location.approved = !location.approved;
-            await location.save();
-            return location.approved;
-          });
-        })
-        .catch(console.error);
+    approveLocation: async (parent, { id }, { models, currentUser }) => {
+      if (currentUser) {
+        return await sequelize
+          .transaction(t => {
+            return models.Location.findOne(
+              {
+                where: {
+                  id
+                }
+              },
+              { transaction: t }
+            ).then(async location => {
+              location.approved = !location.approved;
+              await location.save();
+              return location.approved;
+            });
+          })
+          .catch(console.error);
+      }
     },
-    rejectLocation: async (parent, args, { models }) => {
-      const { id, idea } = args;
-      return await sequelize
-        .transaction(t => {
-          return models.Location.findOne(
-            {
-              where: {
-                id
-              }
-            },
-            { transaction: t }
-          ).then(async location => {
-            await location.destroy();
-            return location.approved;
-          });
-        })
-        .catch(console.error);
+    rejectLocation: async (parent, { id }, { models, currentUser }) => {
+      if (currentUser) {
+        return await sequelize
+          .transaction(t => {
+            return models.Location.findOne(
+              {
+                where: {
+                  id
+                }
+              },
+              { transaction: t }
+            ).then(async location => {
+              await location.destroy();
+              return location.approved;
+            });
+          })
+          .catch(console.error);
+      }
     }
   }
 };
@@ -288,9 +291,19 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: {
-    models,
-    secret: process.env.SECRET,
+  context: ({ req }) => {
+    const token = req.headers.authorization ? req.headers.authorization.slice(7) : null;
+    const secret = process.env.SECRET;
+    let currentUser;
+    jwt.verify(token, secret, function(err, decoded) {
+      currentUser = err ? null : decoded
+    })
+
+    return {
+      models,
+      secret,
+      currentUser,
+    }
   }
 });
 

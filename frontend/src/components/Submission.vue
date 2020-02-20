@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import { APPROVE_LOCATION_MUTATION, REJECT_LOCATION_MUTATION } from '../constants/graphql'
 import { formatDate } from '../mixins/formatDate.js'
 
 export default {
@@ -25,37 +24,33 @@ export default {
   }, 
   mixins: [formatDate],
   methods: {
-    approveLocation: async function (id) {
-      await axios({
-        url: '/graphql',
-        method: 'post',
-        data: {
-          query: `
-            mutation {
-              approveLocation(
-                id: "${id}"
-              )
-            }
-          `
+    approveLocation(id) {
+      this.$apollo.mutate({
+        mutation: APPROVE_LOCATION_MUTATION,
+        variables: {
+          id: id.toString(),
+        },
+      }).then((result) => {
+        if (result.data.approveLocation) {
+          this.$emit("update-locations", id)
         }
-      });
-      this.$emit("update-locations", id)
+      }).catch((error) => {
+        alert(error)
+      })
     },
-    rejectLocation: async function (id) {
-      await axios({
-        url: '/graphql',
-        method: 'post',
-        data: {
-          query: `
-            mutation {
-              rejectLocation(
-                id: "${id}"
-              )
-            }
-          `
+    rejectLocation(id) {
+      this.$apollo.mutate({
+        mutation: REJECT_LOCATION_MUTATION,
+        variables: {
+          id: id.toString(),
+        },
+      }).then((result) => {
+        if (result.data.rejectLocation === false) {
+          this.$emit("update-locations", id)
         }
-      });
-      this.$emit("update-locations", id)
+      }).catch((error) => {
+        alert(error)
+      })
     }
   }
 };

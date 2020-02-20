@@ -1,62 +1,49 @@
 <template>
-  <div id="submission-admin-page">
+  <div v-if="me" id="submission-admin-page">
     <h2>Locations Pending Verification</h2>
     <p class="mb-4">Make sure each location has a valid address and clear picture!</p>
     <div class="submissions-container">
       <Submission
       :key="location.submission_id"
-      v-for="location in locations"
+      v-for="location in submittedLocations"
       :location="location"
       :id="location.submission_id"
       @update-locations="updateLocations"/>
-      <h3 v-if="locations.length === 0">There are no pending submissions</h3>
+      <h3 v-if="submittedLocations.length === 0">There are no pending submissions</h3>
     </div>
   </div>
+  <a v-else href="/login">Click here to login</a>
 </template>
 
 <script>
-import axios from 'axios';
 import Submission from "./Submission";
+import { SUBMITTED_LOCATIONS_QUERY, ME_QUERY } from '../constants/graphql'
+
 export default {
-  name: "SubmissionAdmiPage",
+  name: "SubmissionAdminPage",
   components: {
     Submission
   },
   data() {
     return {
-      locations: [],
-      errors: []
+      submittedLocations: [],
+      me: false
     }
   },
-  async created() {
-    try {
-        const result = await axios({
-          url: '/graphql',
-          method: 'post',
-          data: {
-            query: `
-                {
-                  submittedLocations {
-                    id
-                    address
-                    createdAt
-                  }
-                }
-              `
-          }
-        });
-        this.locations = result.data.data.submittedLocations;
-    } catch (error) {
-        this.errors.push(error);
-    }
+  apollo: {
+    submittedLocations: SUBMITTED_LOCATIONS_QUERY,
+    me: ME_QUERY
   },
   methods: {
-    updateLocations: function(id) {
-      this.locations = this.locations.filter(location => {
+    updateLocations(id) {
+      this.submittedLocations = this.submittedLocations.filter(location => {
         return location.id !== id;
       })
-    }
-  }
+    },
+    loginRedirect() {
+      this.$router.push('/login')
+    },
+  },
 };
 </script>
 
@@ -64,10 +51,16 @@ export default {
   h1 {
     margin-bottom: 30px;
   }
+
   .submissions-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
     grid-gap: 15px;
     justify-content: center;
+  }
+  
+  a { 
+    color: #42b983; 
+    font-weight: 600;
   }
 </style>

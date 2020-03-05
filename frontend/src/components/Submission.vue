@@ -1,7 +1,7 @@
 <template>
   <div class="submission-container">
     <h4 class="m-3">{{location.address}}</h4>
-    <img class="submission-img" src="https://i.imgur.com/LF1Ndmb.jpg">
+    <img class="submission-img" :src="location.imageURL">
     <div class="timestamp mt-3">
       <span>Submitted on:</span>
       {{formatDate(location.createdAt)}}

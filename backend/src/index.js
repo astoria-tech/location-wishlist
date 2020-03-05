@@ -1,4 +1,6 @@
 const express = require("express");
+const getStream = require('get-stream');
+const mime = require('mime-types')
 const { ApolloServer, gql } = require("apollo-server-express");
 const { Storage } = require('@google-cloud/storage');
 
@@ -6,7 +8,7 @@ const { Storage } = require('@google-cloud/storage');
 const { GCP_ASTORIATECH_CREDS } = process.env;
 // Convert creds from base64 to JSON
 const gcpCreds = JSON.parse(Buffer.from(GCP_ASTORIATECH_CREDS, "base64").toString());
-const gcpBucketName = "astoria-tech-wishlist-images";
+const gcpBucketName = "astoriatech-wishlist-images";
 const gcpStorageOptions = {
   credentials: {
     client_email: gcpCreds.client_email,
@@ -19,13 +21,9 @@ const gcpStorageOptions = {
 const storage = new Storage(gcpStorageOptions);
 const bucket = storage.bucket(gcpBucketName);
 
-// Call methods on bucket; this is just an example.
-bucket.exists().then(data => {
-    console.log(data); // returns [false] if the bucket doesn't exist
-  })
-  .catch(err => {
-    console.error(err.message);
-  });
+// Check that the bucket exists
+//bucket.exists().then(data => { console.log(data); })
+               //.catch(err => { console.error(err.message); });
 
 const sequelize = require("./models").sequelize;
 const models = require("./models");
@@ -101,19 +99,37 @@ const resolvers = {
   },
   Mutation: {
     addLocation: async (parent, args, { models }) => {
+      // Validate the address
       const { address } = args;
       if (address.trim() == "") {
         throw "Address can't be empty string";
       }
 
-      console.log('DEBUG', args.photo);
+      // Create the location
+      const location = await models.Location.create({ address });
 
-      const [location, created] = await models.Location.findOrCreate({
-        where: { address },
-        defaults: { address }
+      // Get the uploaded file
+      const { filename, mimetype, createReadStream } = await args.photo
+      if (! mimetype.startsWith('image') ) {
+        throw "The uploaded file has to be an image"
+      }
+
+      // Get the GCS file write stream
+      const file = bucket.file(location.id + '.' + mime.extension(mimetype));
+      const stream = file.createWriteStream({ metadata: { contentType: mimetype }});
+
+      // Prepare and write the uploaded file to the bucket
+      stream.on('error', (err) => {
+        console.error(err);
+        next(err);
       });
+      stream.on('finish', async () => {
+        location.imageURL = 'https://storage.cloud.google.com/' + bucket.name + '/' + file.name;
+        await location.save();
+      });
+      stream.end(await getStream.buffer(createReadStream()))
 
-      return created;
+      return true;
     },
     addIdea: async (parent, args, { models }) => {
       const { id, idea } = args;
